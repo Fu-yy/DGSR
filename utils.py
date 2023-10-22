@@ -19,12 +19,65 @@ def pickle_loader(path):
     return a
 
 def user_neg(data, item_num):
+
+    '''
+    这段代码定义了一个名为user_neg的函数，用于生成每个用户的负样本数据。
+
+        函数的输入参数包括：
+
+        data：一个包含用户-物品交互数据的DataFrame，其中至少包含'user_id'和'item_id'两列。
+        item_num：一个整数，表示物品的总数量。
+        函数的主要功能是根据输入的用户-物品交互数据，为每个用户生成负样本数据。具体步骤如下：
+
+        item = range(item_num)：创建一个包含从0到(item_num-1)的整数范围的迭代器对象item，表示所有物品的标识符。
+
+        select(data_u, item)是一个内部函数，用于从给定的用户交互数据data_u中选择负样本。它使用np.setdiff1d函数获取item和data_u之间的差集，即在item中存在但不在data_u中出现的物品标识符。这些物品标识符即为负样本。
+
+        data.groupby('user_id')['item_id'].apply(lambda x: select(x, item))：首先，根据'user_id'列对data进行分组，然后对每个用户的'item_id'列应用select函数。这将为每个用户生成相应的负样本数据。最终的结果是一个Series对象，索引为用户ID，值为对应用户的负样本数据。
+
+        函数返回生成的负样本数据。
+
+        总体而言，该函数通过对用户-物品交互数据进行分组和差集操作，为每个用户生成负样本数据。负样本是指在物品总数量中存在但用户没有交互过的物品。生成的负样本数据以Series的形式返回，其中索引为用户ID，值为对应用户的负样本数据。
+    '''
     item = range(item_num)
     def select(data_u, item):
         return np.setdiff1d(item, data_u)
     return data.groupby('user_id')['item_id'].apply(lambda x: select(x, item))
 
 def neg_generate(user, data_neg, neg_num=100):
+
+    '''
+
+    函数的输入参数包括：
+
+        user：一个包含用户ID的NumPy数组，表示用户集合。
+        data_neg：一个字典或数组，存储了每个用户的负样本数据。
+        neg_num：一个整数，表示每个用户需要生成的负样本数量，默认值为100。
+    函数的主要功能是生成用户的负样本数据。具体步骤如下：
+
+    创建一个形状为(len(user), neg_num)的全零NumPy数组neg，用于存储生成的负样本数据。数组的数据类型为np.int32，即32位整数。
+
+    遍历user数组中的每个用户ID，使用enumerate函数获取索引i和对应的用户IDu。
+
+    对于每个用户ID u，从data_neg[u]中随机选择neg_num个样本，且不可重复（replace=False），并将选择的样本存储到neg数组的第i行。
+
+    完成遍历后，返回生成的负样本数组neg。
+
+    总体而言，该函数根据输入的用户集合和负样本数据，为每个用户生成一定数量的负样本。负样本是通过随机选择每个用户的负样本数据集（data_neg）中的样本得到的。生成的负样本存储在一个NumPy数组中，并作为函数的输出返回。
+
+
+
+    在机器学习和推荐系统中，负样本（Negative Samples）是指与已知的正样本（Positive Samples）不相似或不相关的样本。在推荐系统中，正样本通常表示用户已经喜欢或者有过行为交互的物品，而负样本则代表用户没有喜欢或者交互过的物品。
+
+        负样本的作用是用于构建训练数据集，帮助模型学习区分用户的兴趣和喜好。通过将正样本与负样本进行对比，模型可以学习到正样本的特征和属性，并且区分出与之不相似的负样本。这有助于模型在实际应用中进行推荐时，能够更好地区分用户的兴趣，提供更准确的推荐结果。
+
+        生成负样本的方式可以有多种，常见的方法包括：
+
+        随机采样：从所有未被用户交互过的物品中随机选择一定数量的物品作为负样本。
+        排序采样：根据物品的一些特征（如流行度、热度等），对未被用户交互过的物品进行排序，选择排名靠前的物品作为负样本。
+        负例生成模型：使用生成模型（如生成对抗网络）来生成与已知正样本不相似的负样本。
+        生成负样本的目的是为了训练模型能够准确地区分用户的喜好和兴趣，从而提高推荐系统的准确性和个性化程度。
+    '''
     neg = np.zeros((len(user), neg_num), np.int32)
     for i, u in enumerate(user):
         neg[i] = np.random.choice(data_neg[u], neg_num, replace=False)
