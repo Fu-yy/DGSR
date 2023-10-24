@@ -1,6 +1,7 @@
 # DGSR
 The code and dataset for our TKDE 2022 paper: Dynamic Graph Neural Networks for Sequential Recommendation (https://ieeexplore.ieee.org/abstract/document/9714053). We have implemented our methods in Pytorch.
 
+You need exec 'conda install cudatoolkit=10.2' to install cuda102
 ## Dependencies
 
 - Python 3.6

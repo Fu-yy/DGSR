@@ -5,4 +5,4 @@ start /B python -u new_data.py ^
 --item_max_length=50 ^
 --user_max_length=50 ^
 --k_hop=3 ^
-> .\results\cd_data
+> ..\results\cd_data

@@ -7,6 +7,7 @@
 import pandas as pd
 import pickle
 from utils import myFloder, pickle_loader, collate, trans_to_cuda, eval_metric, collate_test, user_neg
+import os
 
 
 
@@ -34,8 +35,15 @@ pickle.dump(data_neg,f)：使用pickle模块将负样本数据data_neg写入文�
 f.close()：关闭文件对象f。
 
 '''
+
+# 获取当前文件的目录
+current_dir = os.path.dirname(__file__)
+
 dataset = 'Games'
-data = pd.read_csv('./Data/' + dataset + '.csv')
+file_path = os.path.join(current_dir, 'Data', dataset + '.txt')
+file_path.replace('/', '\\')
+
+data = pd.read_csv(file_path)
 user = data['user_id'].unique()
 item = data['item_id'].unique()
 user_num = len(user)

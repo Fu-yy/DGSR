@@ -1,0 +1,5 @@
+dgl_cuda10.2==0.7.2
+joblib==1.3.2
+numpy==1.19.2
+pandas==0.20.3
+torch==1.7.1
