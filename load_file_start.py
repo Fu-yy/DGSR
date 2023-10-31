@@ -5,7 +5,7 @@ import argparse
 
 
 if __name__ == '__main__':
-    data_name_list = ["Games", "Beauty"]
+    data_name_list = ["Games", "Beauty","cd"]
     # data_name_list = ["Games", "Beauty", "Movie", "cd"]
     # 获取当前文件的目录
     current_dir = os.path.dirname(__file__)
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     file_path = file_path.replace('/', '\\')
 
     # 测试一个数据集
-    new_data.mainLoadData(data_name_list[0], 10, 50, 50, 3, os.path.join(file_path, data_name_list[1]))
+    new_data.mainLoadData(data_name_list[2], 10, 50, 50, 3, os.path.join(file_path, data_name_list[2]))
 
 
 

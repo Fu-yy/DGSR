@@ -85,15 +85,18 @@ def neg_generate(user, data_neg, neg_num=100):
 
 
 class myFloder(Dataset):
+
+
     def __init__(self, root_dir, loader):
         self.root = root_dir
         self.loader = loader
-        self.dir_list = load_data(root_dir)
+        # loader可以通过路径加载图形数据
+        self.dir_list = load_data(root_dir)  # 通过load_data（）加载root_dir的文件
         self.size = len(self.dir_list)
 
     def __getitem__(self, index):
         dir_ = self.dir_list[index]
-        data = self.loader(dir_)
+        data = self.loader(dir_)# 可以通过路径加载图形数据
         return data
 
     def __len__(self):
@@ -115,7 +118,7 @@ def collate(data):
 
 def load_data(data_path):
     data_dir = []
-    dir_list = os.listdir(data_path)
+    dir_list = os.listdir(data_path)  #所有文件夹名称的列表
     dir_list.sort()
     for filename in dir_list:
         for fil in os.listdir(os.path.join(data_path, filename)):

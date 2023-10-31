@@ -47,6 +47,7 @@ class DGSR(nn.Module):
     def forward(self, g, user_index=None, last_item_index=None, neg_tar=None, is_training=False):
         feat_dict = None
         user_layer = []
+
         g.nodes['user'].data['user_h'] = self.user_embedding(g.nodes['user'].data['user_id'].cuda())
         g.nodes['item'].data['item_h'] = self.item_embedding(g.nodes['item'].data['item_id'].cuda())
         if self.layer_num > 0:
@@ -274,6 +275,15 @@ class DGSRLayers(nn.Module):
             return {'user_h': self.agg_gate_u(torch.cat(h,-1))}
 
 def graph_user(bg, user_index, user_embedding):
+    """
+    从图中获取用户节点的嵌入向量。
+    参数:
+        bg (dgl.DGLGraph): 包含图数据的DGL图对象。
+        user_index (torch.Tensor): 用户节点的索引。
+        user_embedding (torch.Tensor): 所有用户节点的嵌入向量。
+    返回:
+        torch.Tensor: 提取的用户节点的嵌入向量。
+    """
     b_user_size = bg.batch_num_nodes('user')
     # tmp = np.roll(np.cumsum(b_user_size).cpu(), 1)
     # ----numpy写法----
@@ -287,6 +297,16 @@ def graph_user(bg, user_index, user_embedding):
     return user_embedding[new_user_index]
 
 def graph_item(bg, last_index, item_embedding):
+
+    """
+    从图中获取物品节点的嵌入向量。
+    参数:
+        bg (dgl.DGLGraph): 包含图数据的DGL图对象。
+        last_index (torch.Tensor): 上一个物品节点的索引。
+        item_embedding (torch.Tensor): 所有物品节点的嵌入向量。
+    返回:
+        torch.Tensor: 提取的物品节点的嵌入向量。
+    """
     b_item_size = bg.batch_num_nodes('item')
     # ----numpy写法----
     # tmp = np.roll(np.cumsum(b_item_size.cpu().numpy()), 1)
@@ -299,6 +319,13 @@ def graph_item(bg, last_index, item_embedding):
     return item_embedding[new_item_index]
 
 def order_update(edges):
+    """
+    对边的时间属性进行排序，并返回排序后的索引。
+    参数:
+        edges (dgl.EdgeBatch): 包含时间属性的边数据。
+    返回:
+        dict: 包含排序索引的字典，键为'order'和're_order'。
+    """
     dic = {}
     dic['order'] = torch.sort(edges.data['time'])[1]
     dic['re_order'] = len(edges.data['time']) - dic['order']
@@ -306,6 +333,13 @@ def order_update(edges):
 
 
 def collate(data):
+    """
+    对图数据进行批处理。
+    参数:
+        data (list): 包含图数据的列表，每个元素是一个图数据和相应的标签。
+    返回:
+        tuple: 包含批处理后的用户索引、图数据、标签和上一个物品索引的元组。
+    """
     user = []
     user_l = []
     graph = []
@@ -321,14 +355,37 @@ def collate(data):
 
 
 def neg_generate(user, data_neg, neg_num=100):
+    """
+    生成负样本。
+    参数:
+        user (List[int]): 用户索引列表。
+        data_neg (Dict[int, List[int]]): 包含每个用户对应的负样本的字典。
+        neg_num (int): 每个用户的负样本数量。
+    返回:
+        np.ndarray: 生成的负样本矩阵。
+    """
     neg = np.zeros((len(user), neg_num), np.int32)
     for i, u in enumerate(user):
-        neg[i] = np.random.choice(data_neg[u], neg_num, replace=False)
+        if len(data_neg[u]) >= neg_num:
+            neg[i] = np.random.choice(data_neg[u], neg_num, replace=False)
+        else:
+            # 如果负样本数量不足，则从负样本中有放回地选择，直到达到指定数量
+            neg[i][:len(data_neg[u])] = np.random.choice(data_neg[u], len(data_neg[u]), replace=False)
+            indices = np.arange(len(data_neg[u]))
+            np.random.shuffle(indices)
+            extra_samples = neg_num - len(data_neg[u])
+            neg[i][len(data_neg[u]):] = np.random.choice(data_neg[u], extra_samples, replace=True)
     return neg
 
-
-def collate_test(data, user_neg):
-    # 生成负样本和每个序列的长度
+def collate_fn_test(batch, data, user_neg):
+    """
+    对测试数据进行批处理，并生成负样本。
+    参数:
+        data (list): 包含图数据的列表，每个元素是一个图数据和相应的标签。
+        user_neg (dict): 包含每个用户对应的负样本的字典。
+    返回:
+        tuple: 包含批处理后的用户索引、图数据、标签、上一个物品索引和负样本的元组。
+    """
     user = []
     graph = []
     label = []
@@ -338,7 +395,31 @@ def collate_test(data, user_neg):
         graph.append(da[0][0])
         label.append(da[1]['target'])
         last_item.append(da[1]['last_alis'])
-    return torch.tensor(user).long(), dgl.batch(graph), torch.tensor(label).long(), torch.tensor(last_item).long(), torch.Tensor(neg_generate(user, user_neg)).long()
+    return torch.tensor(user).long(), dgl.batch(graph), torch.tensor(label).long(), \
+           torch.tensor(last_item).long(), torch.Tensor(neg_generate(user, user_neg)).long()
+
+def collate_test(batch,data, user_neg):
+    """
+      对测试数据进行批处理，并生成负样本。
+      参数:
+          data (list): 包含图数据的列表，每个元素是一个图数据和相应的标签。
+          user_neg (dict): 包含每个用户对应的负样本的字典。
+      返回:
+          tuple: 包含批处理后的用户索引、图数据、标签、上一个物品索引和负样本的元组。
+      """
+
+
+    user = []
+    graph = []
+    label = []
+    last_item = []
+    for da in data:
+        user.append(da[1]['u_alis'])
+        graph.append(da[0][0])
+        label.append(da[1]['target'])
+        last_item.append(da[1]['last_alis'])
+    return torch.tensor(user).long(), dgl.batch(graph), torch.tensor(label).long(),\
+           torch.tensor(last_item).long(), torch.Tensor(neg_generate(user, user_neg)).long()
 
 
 

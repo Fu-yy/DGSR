@@ -27,6 +27,7 @@ def cal_order(data):
     '''
     data = data.sort_values(['time'], kind='mergesort')
     data['order'] = range(len(data))
+
     return data
 
 
@@ -40,6 +41,8 @@ def cal_u_order(data):
     '''
     data = data.sort_values(['time'], kind='mergesort')
     data['u_order'] = range(len(data))
+
+
     return data
 
 
@@ -50,6 +53,10 @@ def refine_time(data):
     就将后续时间值加上一个增量time_gap，并递增time_gap。
     最后更新data中的时间列为调整后的时间序列，并返回调整后的data。
 
+
+
+    目的：处理时间顺序错误，还有时间相同的数据    用归并排序稳定且复杂度低
+
     '''
     data = data.sort_values(['time'], kind='mergesort')
     time_seq = data['time'].values
@@ -59,17 +66,37 @@ def refine_time(data):
             time_seq[i + 1] = time_seq[i + 1] + time_gap
             time_gap += 1
     data['time'] = time_seq
+
     return data
 
 
 def generate_graph(data):
     # 对输入的数据按照用户ID进行分组，并通过调用refine_time函数对每个用户的数据进行处理，使得每个用户的交互记录按时间排序。最后通过reset_index(drop=True)重置索引。
     data = data.groupby('user_id').apply(refine_time).reset_index(drop=True)
-    # 对处理后的数据再次按照用户ID进行分组，并通过调用cal_order函数为每个用户的交互记录计算相对次序。最后通过reset_index(drop=True)重置索引。
+
+    # print("计算refine_time后")
+    #
+    # print(data.head(30))
+
+    # 对处理后的数据再次按照用户ID进行分组，并通过调用cal_order函数为每个用户的交互记录计算相对次序。最后通过reset_index(drop=True)重置索引。 也就是根据时间排序然后加一列顺序索引号order
     data = data.groupby('user_id').apply(cal_order).reset_index(drop=True)
+    # print("计算cal_order后")
+    # print(data.head(30))
 
     # 对处理后的数据按照物品ID进行分组，并通过调用cal_u_order函数为每个物品的交互记录计算相对次序。最后通过reset_index(drop=True)重置索引。
     data = data.groupby('item_id').apply(cal_u_order).reset_index(drop=True)
+
+    # print("计算cal_u_order后")
+    #
+    # print(data.head(30))
+    #
+    # print(data['user_id'])
+    # print(data['item_id'])
+    # print(data['time'])
+
+
+
+
     # 将处理后的数据中的用户ID列转换为NumPy数组。/
     user = data['user_id'].values
     # 将处理后的数据中的物品ID列转换为NumPy数组。
@@ -82,9 +109,10 @@ def generate_graph(data):
     # 构建了一个字典graph_data，其中包含了两种类型的边：由物品到用户的边（'item'到'user'）和由用户到物品的边（'user'到'item'）。每条边的值是一个元组，包含了源节点和目标节点的张量表示。
     graph_data = {('item', 'by', 'user'): (torch.tensor(item), torch.tensor(user)),
                   ('user', 'pby', 'item'): (torch.tensor(user), torch.tensor(item))}
-
     # 使用dgl.heterograph函数创建一个异构图（heterograph），根据graph_data中的边和节点信息构建图。
     graph = dgl.heterograph(graph_data)
+
+    # print(graph.number_of_nodes('item'))
 
     # 将图中由用户到物品的边（'by'类型）的时间属性（'time'）设置为time的张量表示。
     graph.edges['by'].data['time'] = torch.LongTensor(time)
@@ -99,6 +127,8 @@ def generate_graph(data):
     # 将图中用户节点的属性（'user_id'）设置为唯一的用户ID的张量表示。
     graph.nodes['user'].data['user_id'] = torch.LongTensor(np.unique(user))
 
+    # print(graph.number_of_nodes('item'))
+
     # 将图中物品节点的属性（'item_id'）设置为唯一的物品ID的张量表示
     graph.nodes['item'].data['item_id'] = torch.LongTensor(np.unique(item))
     # graph.nodes['item'].data['last_user'] = torch.tensor(data['u_last'])
@@ -108,17 +138,19 @@ def generate_graph(data):
 
 def generate_user(user, data, graph, item_max_length, user_max_length, train_path, test_path, val_path,k_hop=3):
     # 从data中选择与当前用户ID匹配的行，并按照时间列进行排序。将结果存储在data_user中  返回的是一个用户的list（猜想）
-    data_user = data[data['user_id'] == user].sort_values('time')
+    data_user = data[data['user_id'] == user].sort_values('time')  # 分别处理每个用户id对应的各项数据
 
+    # print(data_user.head(30))
+    # print(data.head(30))
     # 从data_user中提取时间列的值，并存储在u_time中。
     u_time = data_user['time'].values
-
+    # print(u_time)
     # 从data_user中提取物品ID列的值，并存储在u_seq中。
     u_seq = data_user['item_id'].values
-
+    # print(u_seq)
     # 计算u_seq的长度减1，并将结果存储在split_point中。
     split_point = len(u_seq) - 1
-
+    # print(split_point)
     # test_len_seq = len(u_seq);
     # print("test_len_seq")
     # print(test_len_seq)
@@ -150,8 +182,21 @@ def generate_user(user, data, graph, item_max_length, user_max_length, train_pat
             sub_u_eid = (graph.edges['by'].data['time'] < u_time[j + 1]) & (graph.edges['by'].data['time'] >= start_t)
             # 根据给定的时间范围，选择图中与当前物品相关的边的索引。sub_i_eid是一个布尔数组，指示哪些边满足时间范围条件。
             sub_i_eid = (graph.edges['pby'].data['time'] < u_time[j + 1]) & (graph.edges['pby'].data['time'] >= start_t)
-            # 根据选择的边构建子图sub_graph，这个子图包含了在给定时间范围内与当前用户和物品相关的边。
+            # 根据选择的边构建子图sub_graph，这个子图包含了在给定时间范围内与当前用户和物品相关的边。----根据这些边构建子图
             sub_graph = dgl.edge_subgraph(graph, edges={'by': sub_u_eid, 'pby': sub_i_eid}, relabel_nodes=False)
+
+            # node_types = sub_graph.ntypes
+            # edge_types = sub_graph.etypes
+            # print(" sub_graph Node data:")
+            # for ntype in node_types:
+            #     print(f"sub_graph Nodes of type '{ntype}':")
+            #     print(sub_graph.nodes[ntype].data)
+            #
+            # print("sub_graph Edge data:")
+            # for etype in edge_types:
+            #     print(f"sub_graph Edges of type '{etype}':")
+            #     print(sub_graph.edges[etype].data)
+
             # 将当前用户ID转换为张量u_temp。
             u_temp = torch.tensor([user])
             # 将当前用户ID转换为张量 his_user，用于存储历史用户ID。
@@ -160,7 +205,37 @@ def generate_user(user, data, graph, item_max_length, user_max_length, train_pat
             # 根据时间权重和item_max_length选择与当前用户相关的前item_max_length个物品节点，构建子图graph_i。
             graph_i = select_topk(sub_graph, item_max_length, weight='time', nodes={'user': u_temp})
 
+            '''
+               dgl.sampling.select_topk(g, k, weight, nodes=None, edge_dir='in', ascending=False, copy_ndata=True, copy_edata=True)
+                 dgl库中的一个函数，用于从图中选择与给定节点相关的具有 k 个最大或最小权重的相邻边，然后返回由这些边所引入的子图。
+
+                以下是函数的参数和详细解释：
+                
+                g: 输入的原始图。
+                k: 每个节点选择的边的数量，即要选择的边的排名前 k 的边。
+                weight: 衡量边权重的标准。可以是边上的某个特征或属性，用于确定边的权重大小。
+                nodes: 一个指定节点的列表，表示要从哪些节点出发选择边。如果为 None，则选择图中所有节点的边。
+                edge_dir: 边的方向。可以是 'in'（入边）或 'out'（出边）。表示选择与节点入边或出边相关的权重。
+                ascending: 一个布尔值，指定是否按升序（True）或降序（False）排列边的权重。如果为 True，将选择排名最低的权重。
+                copy_ndata: 一个布尔值，指定是否将节点特征数据复制到子图中。
+                copy_edata: 一个布尔值，指定是否将边特征数据复制到子图中。
+            '''
+
+            # node_types = graph_i.ntypes
+            # edge_types = graph_i.etypes
+            # print(" graph_i Node data:")
+            # for ntype in node_types:
+            #     print(f"graph_i Nodes of type '{ntype}':")
+            #     print(graph_i.nodes[ntype].data)
+            #
+            # print("graph_i Edge data:")
+            # for etype in edge_types:
+            #     print(f"graph_i Edges of type '{etype}':")
+            #     print(graph_i.edges[etype].data)
+
             # 从graph_i中获取物品节点的唯一标识，并存储在张量i_temp中，用于存储历史物品ID。
+
+
             i_temp = torch.unique(graph_i.edges(etype='by')[0])
 
             # 从graph_i中获取物品节点的唯一标识，并存储在张量his_item中，用于存储历史物品ID。
@@ -168,6 +243,11 @@ def generate_user(user, data, graph, item_max_length, user_max_length, train_pat
 
             #  从graph_i中获取边的全局ID，并将结果存储在名为edge_i的列表中。
             edge_i = [graph_i.edges['by'].data[dgl.NID]]
+
+            # print(i_temp)
+            # print(his_item)
+            # print(edge_i)
+
             # 初始化名为edge_u的空列表，用于存储用户的边的全局ID。
             edge_u = []
             # 迭代k_hop-1次，用于生成多跳子图。
@@ -211,13 +291,19 @@ def generate_user(user, data, graph, item_max_length, user_max_length, train_pat
             # 获取当前时间点的物品ID，作为上一个物品。
             last_item = u_seq[j]
 
+            testUser = fin_graph.nodes['user'].data['user_id'] == user
+            testItem = fin_graph.nodes['item'].data['item_id'] == last_item
+            # print(testUser)
+            # print(testItem)
+
             # 从fin_graph中获取当前用户在节点中的索引，存储在u_alis中。
             u_alis = torch.where(fin_graph.nodes['user'].data['user_id'] == user)[0]
 
             # 从fin_graph中获取上一个物品在节点中的索引，存储在`last_alis
             last_alis = torch.where(fin_graph.nodes['item'].data['item_id'] == last_item)[0]
             # 分别计算user和last_item在fin_graph中的索引
-
+            # print(u_alis)
+            # print(last_alis)
             # 训练集
             if j < split_point - 1:
                 save_graphs(train_path + '/' + str(user) + '/' + str(user) + '_' + str(j) + '.bin', fin_graph,
@@ -265,7 +351,7 @@ def generate_data(data, graph, item_max_length, user_max_length, train_path, tes
     '''
     # 获取所有用户的ID
     user = data['user_id'].unique()
-    print(user)
+    # print(user)
     # 使用普通的函数替代Lambda函数，并进行并行处理
     # n_jobs改成-1  需要的时候再改成10
     results = Parallel(n_jobs=-1)(
@@ -273,6 +359,8 @@ def generate_data(data, graph, item_max_length, user_max_length, train_path, tes
         (u, data, graph, item_max_length, user_max_length, train_path, test_path, val_path,k_hop)
         for u in user
     )
+    # print("train_num, test_num")
+    # print(results)
     # 处理每个任务的结果
     for result in results:
         # 在这里处理每个任务的结果
@@ -303,9 +391,11 @@ def mainLoadData(data, job, item_max_length, user_max_length, k_hop, result_path
 
     data_path = os.path.join(My_path, 'Data', opt.data + '.csv')
     graph_path = os.path.join(My_path, 'Data', opt.data + '_graph.bin')
-    data = pd.read_csv(data_path).groupby('user_id').apply(refine_time).reset_index(drop=True)
+    data = pd.read_csv(data_path).groupby('user_id').apply(refine_time).reset_index(drop=True)      # 读取数据根据userid分组且根据时间排序
     data['time'] = data['time'].astype('int64')
 
+
+    # print(data.head(30))
     # if opt.graph:
     #     graph = generate_graph(data)
     #     save_graphs(graph_path, graph)
@@ -318,6 +408,20 @@ def mainLoadData(data, job, item_max_length, user_max_length, k_hop, result_path
     else:
         graph = dgl.load_graphs(graph_path)[0][0]
 
+    node_types = graph.ntypes
+    edge_types = graph.etypes
+    # print("graph Node data:")
+    # for ntype in node_types:
+    #     print(f"graph Nodes of type '{ntype}':")
+    #     print(graph.nodes[ntype].data)
+    #
+    # print("graph Edge data:")
+    # for etype in edge_types:
+    #     print(f" graph Edges of type '{etype}':")
+    #     print(graph.edges[etype].data)
+
+
+    # print(dgl.load_graphs(graph_path)[0][0])
     # 这部分代码根据命令行参数创建训练集、验证集和测试集的存储路径。
 
     # train_path = f'{My_path}/Newdata/{opt.data}_{opt.item_max_length}_{opt.user_max_length}_{opt.k_hop}/train/'
@@ -341,7 +445,7 @@ def mainLoadData(data, job, item_max_length, user_max_length, k_hop, result_path
 
     # generate_user(41, data, graph, opt.item_max_length, opt.user_max_length, train_path, test_path, k_hop=opt.k_hop)
 
-    # 将标准输出重定向到文件
+    # 将标准输出重定向到文件----------------暂时关闭
     sys.stdout = open(result_path, 'w')
 
     print('start:', datetime.datetime.now())
@@ -349,6 +453,10 @@ def mainLoadData(data, job, item_max_length, user_max_length, k_hop, result_path
     # 这部分代码调用generate_data函数，根据给定的data数据、graph图数据和参数生成训练集、验证集和测试集，并返回各个集合的数量。
     all_num = generate_data(data, graph, opt.item_max_length, opt.user_max_length, train_path, test_path, val_path,
                             job=opt.job, k_hop=opt.k_hop)
+    # generate_data 传入一个迭代函数-->process_user-->generate_user()  主要这部分处理
+
+
+    # 最大长度的选择通常依赖于具体任务和数据集的特点，可以通过尝试不同的最大长度值来进行调优。较大的最大长度可能会捕捉到更多的上下文信息，但也会增加计算和内存开销。较小的最大长度可能会丢失一部分信息。
     train_num = 0
     test_num = 0
     for num_ in all_num:
@@ -361,7 +469,7 @@ def mainLoadData(data, job, item_max_length, user_max_length, k_hop, result_path
     # 关闭文件和恢复标准输出
     sys.stdout.close()
     sys.stdout = sys.__stdout__
-
+    # return
 
 class MyOptClass:
     def __init__(self, data='sample', graph=False, item_max_length=50, user_max_length=50, job=10, k_hop=2,

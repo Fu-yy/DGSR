@@ -1,0 +1,85 @@
+Logging to E:\MyCode\PycharmCode\DGSR/results/cd_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_3_layer_2_l2_0.0001
+train number: 42
+test number: 5
+user number: 5
+item number: 57
+start training:  2023-10-31 14:37:27.464587
+Epoch 0, loss 5.2997 =============================================
+start predicting:  2023-10-31 14:37:38.496048
+train_loss:5.2997	test_loss:5.0141	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:37:44.048019
+Epoch 1, loss 4.2293 =============================================
+start predicting:  2023-10-31 14:37:52.970673
+train_loss:4.2293	test_loss:5.6272	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:37:58.606117
+Epoch 2, loss 3.7867 =============================================
+start predicting:  2023-10-31 14:38:07.294553
+train_loss:3.7867	test_loss:5.9631	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:38:12.837156
+Epoch 3, loss 3.7017 =============================================
+start predicting:  2023-10-31 14:38:21.552406
+train_loss:3.7017	test_loss:5.9995	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:38:27.051696
+Epoch 4, loss 3.0450 =============================================
+start predicting:  2023-10-31 14:38:35.671555
+train_loss:3.0450	test_loss:6.0501	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:38:41.174518
+Epoch 5, loss 3.1783 =============================================
+start predicting:  2023-10-31 14:38:49.860498
+train_loss:3.1783	test_loss:6.1063	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:38:55.427942
+Epoch 6, loss 3.0419 =============================================
+start predicting:  2023-10-31 14:39:04.147425
+train_loss:3.0419	test_loss:6.2512	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:39:09.677647
+Epoch 7, loss 2.9221 =============================================
+start predicting:  2023-10-31 14:39:18.385125
+train_loss:2.9221	test_loss:6.4188	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:39:23.929454
+Epoch 8, loss 2.8018 =============================================
+start predicting:  2023-10-31 14:39:33.511982
+train_loss:2.8018	test_loss:6.5978	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:39:40.945394
+Epoch 9, loss 2.7204 =============================================
+start predicting:  2023-10-31 14:39:51.250915
+train_loss:2.7204	test_loss:6.7162	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:39:58.246829
+Epoch 10, loss 2.5248 =============================================
+start predicting:  2023-10-31 14:40:09.136318
+train_loss:2.5248	test_loss:6.8259	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:40:15.520483
+Epoch 11, loss 2.4946 =============================================
+start predicting:  2023-10-31 14:40:25.153632
+train_loss:2.4946	test_loss:6.8346	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:40:31.924317
+Epoch 12, loss 2.5368 =============================================
+start predicting:  2023-10-31 14:40:42.822643
+train_loss:2.5368	test_loss:6.7431	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:40:49.198329
+Epoch 13, loss 2.2462 =============================================
+start predicting:  2023-10-31 14:40:58.661073
+train_loss:2.2462	test_loss:6.8209	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:41:05.134377
+Epoch 14, loss 2.1314 =============================================
+start predicting:  2023-10-31 14:41:14.602961
+train_loss:2.1314	test_loss:6.8450	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:41:20.652614
+Epoch 15, loss 2.0600 =============================================
+start predicting:  2023-10-31 14:41:29.713220
+train_loss:2.0600	test_loss:6.8705	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:41:36.252014
+Epoch 16, loss 2.0336 =============================================
+start predicting:  2023-10-31 14:41:45.698445
+train_loss:2.0336	test_loss:6.9439	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:41:51.427478
+Epoch 17, loss 2.1924 =============================================
+start predicting:  2023-10-31 14:42:00.264116
+train_loss:2.1924	test_loss:7.0266	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:42:05.844306
+Epoch 18, loss 2.2316 =============================================
+start predicting:  2023-10-31 14:42:14.549240
+train_loss:2.2316	test_loss:6.9944	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0
+start training:  2023-10-31 14:42:20.289297
+Epoch 19, loss 1.7664 =============================================
+start predicting:  2023-10-31 14:42:29.107360
+train_loss:1.7664	test_loss:7.1785	Recall@5:0.0000	Recall@10:0.0000	Recall@20:0.0000	NDGG@5:0.0000	NDGG10@10:0.0000	NDGG@20:0.0000	Epoch:0,0,0,0,0,0

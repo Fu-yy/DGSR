@@ -1,0 +1,15 @@
+start: 2023-10-29 12:46:42.949472
+[0 1 2 3 4]
+result
+(8, 1)
+result
+(9, 1)
+result
+(11, 1)
+result
+(9, 1)
+result
+(5, 1)
+The number of train set: 42
+The number of test set: 5
+end: 2023-10-29 12:46:45.933128

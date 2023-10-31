@@ -1,0 +1,89 @@
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x0000020ED7406DA0>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-24 16:46:43.675624
+tensor([0, 5, 0, 4, 0])
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 929
+train number: <utils.myFloder object at 0x0000028FEA1A6D68>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-24 21:28:44.095885
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 83
+train number: <utils.myFloder object at 0x000001E0D0083D68>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-24 21:31:23.968201
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x0000016BFD61FD30>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-24 21:33:40.645378
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x000002B3D8DB3D68>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-24 21:42:33.608261
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x000001B2D3626DA0>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-25 07:18:04.521647
+tensor([2, 0, 6, 0, 4])
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x000002021E0B8DA0>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-25 07:19:03.787802
+tensor([0, 0, 0, 0, 6])
+tensor([21741,     0, 18482, 21822, 20162])
+tensor([  2, 251, 134, 132,  30])
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001
+train number: 8
+train number: <utils.myFloder object at 0x0000021CDB684E10>
+train number: 31013
+train number: 23715
+test number: 99
+user number: 31013
+item number: 23715
+dadasdasd
+start training:  2023-10-25 15:11:54.222382
+tensor([6, 0, 0, 2, 0])
+tensor([20162, 21741, 18482, 15115, 21822])
+tensor([ 30,   2, 134,  17, 132])
+Logging to E:\MyCode\PycharmCode\DGSR/results/Games_ba_5_G_0_dim_50_ulong_orgat_ilong_orgat_US_att_IS_att_La_False_UM_50_IM_50_K_2_layer_2_l2_0.0001

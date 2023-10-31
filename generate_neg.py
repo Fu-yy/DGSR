@@ -39,8 +39,8 @@ f.close()：关闭文件对象f。
 # 获取当前文件的目录
 current_dir = os.path.dirname(__file__)
 
-dataset = 'Games'
-file_path = os.path.join(current_dir, 'Data', dataset + '.txt')
+dataset = 'cd'
+file_path = os.path.join(current_dir, 'Data', dataset + '.csv')
 file_path.replace('/', '\\')
 
 data = pd.read_csv(file_path)
